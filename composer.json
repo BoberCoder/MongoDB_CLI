@@ -1,0 +1,12 @@
+{
+    "name": "rymar/mongo-db_cli",
+    "authors": [
+        {
+            "name": "Eughene Rymar",
+            "email": "eughene87@ukr.net"
+        }
+    ],
+    "require": {
+        "mongodb/mongodb": "^1.1"
+    }
+}
