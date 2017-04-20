@@ -53,43 +53,71 @@ if ($sql[0] == "SELECT") {
 
     $transformer = new Transformer($collection);
 
+    $options = [];
+    $projections = [];
+
 
     if ($sql[1] == "*")
     {
-        if($where = array_search("WHERE",$sql))
+
+        $projections = $transformer->getAll();
+
+        if($where = array_keys($sql,"WHERE"))
         {
-            $expression = [];
-            $expression[0] = [
-                    "property" => $sql[$where + 1],
-                    "condition" => $sql[$where + 2],
-                    "value" => $sql[$where + 3]
-            ];
+            $expression = $transformer->expressionGenerator($sql,$where);
 
             if ($and = array_keys($sql,"AND"))
             {
-                for($i=0;$i<count($and);$i++)
-                {
-                    $expression[] =
-                        [
-                            "property" => $sql[$and[$i] + 1],
-                            "condition" => $sql[$and[$i] + 2],
-                            "value" => $sql[$and[$i] + 3]
-                        ];
-                }
+                $expression = array_merge($expression,$transformer->expressionGenerator($sql,$and));
+                $operation = "AND";
             }
-            $results = $transformer->whereCondition($expression);
-        }
-        else
-        {
-            $results = $transformer->getAllResult();
+            elseif ($or = array_keys($sql,"OR"))
+            {
+                $expression = array_merge($expression,$transformer->expressionGenerator($sql,$or));
+                $operation = "OR";
+            }
+
+            $options = $transformer->whereCondition($expression,$operation);
         }
     }
     else
     {
         $projections = array_slice($sql, 1, array_search("FROM",$sql) - 1);
-        $results = $transformer->getResultByProgections($projections);
+        $projections = $transformer->getProgections($projections);
+
+        if($where = array_keys($sql,"WHERE"))
+        {
+            $expression = $transformer->expressionGenerator($sql,$where);
+
+            if ($and = array_keys($sql,"AND"))
+            {
+                $expression = array_merge($expression,$transformer->expressionGenerator($sql,$and));
+                $operation = "AND";
+            }
+            elseif ($or = array_keys($sql,"OR"))
+            {
+                $expression = array_merge($expression,$transformer->expressionGenerator($sql,$or));
+                $operation = "OR";
+            }
+
+            $options = $transformer->whereCondition($expression,$operation);
+        }
     }
 
+    $limit = [];
+    $skip = [];
+
+    if(array_search("LIMIT",$sql))
+    {
+        $limit = (int)$sql[array_search("LIMIT",$sql) + 1];
+    }
+    if(array_search("SKIP",$sql))
+    {
+        $skip = (int)$sql[array_search("SKIP",$sql) + 1];
+    }
+
+
+    $results = $transformer->executeQuery($options,$projections,$limit,$skip);
     $transformer->echoResult($results);
 }
 else
