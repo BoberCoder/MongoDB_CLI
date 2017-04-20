@@ -106,6 +106,7 @@ if ($sql[0] == "SELECT") {
 
     $limit = [];
     $skip = [];
+    $order = ["property" => "_id", "val" => 1];
 
     if(array_search("LIMIT",$sql))
     {
@@ -116,8 +117,21 @@ if ($sql[0] == "SELECT") {
         $skip = (int)$sql[array_search("SKIP",$sql) + 1];
     }
 
+    if(array_search("ORDER_BY",$sql))
+    {
+        $order["property"] = $sql[array_search("ORDER_BY",$sql) + 1];
+        if ($sql[array_search("ORDER_BY",$sql) + 2] == "ASC")
+        {
+            $order["val"] = 1;
+        }
+        elseif ($sql[array_search("ORDER_BY",$sql) + 2] == "DESC")
+        {
+            $order["val"] = -1;
+        }
+    }
 
-    $results = $transformer->executeQuery($options,$projections,$limit,$skip);
+
+    $results = $transformer->executeQuery($options,$projections,$limit,$skip,$order);
     $transformer->echoResult($results);
 }
 else

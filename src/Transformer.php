@@ -101,25 +101,23 @@ class Transformer
     }
 
 
-    public function executeQuery($options,$projections,$limit,$skip)
+    public function executeQuery($options,$projections,$limit,$skip,$order)
     {
         if ($limit and $skip)
         {
-            echo 1;
-            $results = $this->collection->find($options, ['projection'=> $projections, 'skip' => $skip ,'limit' => $limit]);
+            $results = $this->collection->find($options, ['projection'=> $projections, 'skip' => $skip ,'limit' => $limit,'sort'=> array($order["property"] => $order["val"])]);
         }
         elseif ($skip)
         {
-            $results = $this->collection->find($options, ['projection'=> $projections, 'skip' => $skip]);
+            $results = $this->collection->find($options, ['projection'=> $projections, 'skip' => $skip,'sort'=> array($order["property"] => $order["val"])]);
         }
         elseif ($limit)
         {
-            echo 2;
-            $results = $this->collection->find($options, ['projection'=> $projections, 'limit' => $limit]);
+            $results = $this->collection->find($options, ['projection'=> $projections, 'limit' => $limit,'sort'=> array($order["property"] => $order["val"])]);
         }
         else
         {
-            $results = $this->collection->find($options, ['projection'=> $projections]);
+            $results = $this->collection->find($options, ['projection'=> $projections, 'sort'=> array($order["property"] => $order["val"])]);
         }
 
         return $results;
@@ -128,10 +126,16 @@ class Transformer
     public function echoResult($results)
     {
         foreach ($results as $result) {
-            foreach ($result as $key => $value) {
-                echo '|' . $result[$key] . '|  ';
+            foreach ($result as $key => $value)
+            {
+                echo $key.str_repeat(" ",strlen($value) - strlen($key) + 6);
             }
             echo "\n";
+
+            foreach ($result as $key => $value) {
+                echo '|' . $result[$key] . '|    ';
+            }
+            echo "\n \n";
         }
     }
 }
