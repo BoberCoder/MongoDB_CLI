@@ -113,7 +113,7 @@ class Transformer
         }
         elseif ($limit)
         {
-            $results = $this->collection->find($options, ['projection'=> $projections, 'limit' => $limit,'sort'=> array($order["property"] => $order["val"])]);
+             $results = $this->collection->find($options, ['projection'=> $projections, 'limit' => $limit,'sort'=> array($order["property"] => $order["val"])]);
         }
         else
         {

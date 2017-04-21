@@ -56,6 +56,7 @@ if ($sql[0] == "SELECT") {
 
     $options = [];
     $projections = [];
+    $operation = "";
 
 
     if ($sql[1] == "*")
