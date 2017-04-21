@@ -2,6 +2,7 @@
 <?php
 
 include 'vendor/autoload.php';
+require_once "config.php";
 
 use MongoDB\Client as MongoClient;
 use MongoDB_CLI\Transformer;
@@ -12,12 +13,12 @@ echo "\033[36mWelcome to MongoDB CLI. Available databases:\033[0m \n";
 /**
  * Display all available databases
  */
-//$admin = new MongoClient('mongodb://127.0.0.1/admin', array('username'=>'Admin','password'=>'1312346456bob'));
-//
-//$dbs = $admin->listDatabases();
-//foreach ($dbs as $db){
-//    echo $db->getName(). "\n";
-//}
+$admin = new MongoClient('mongodb://127.0.0.1/'.$config["database"], array('username'=> $config["username"],'password'=> $config["password"]));
+
+$dbs = $admin->listDatabases();
+foreach ($dbs as $db){
+    echo $db->getName(). "\n";
+}
 
 
 /**
