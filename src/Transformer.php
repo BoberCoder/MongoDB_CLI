@@ -16,7 +16,7 @@ class Transformer
         return [];
     }
 
-    public function getProgections($projections)
+    public function getProjections($projections)
     {
         $array = [];
 
@@ -126,9 +126,8 @@ class Transformer
     public function echoResult($results)
     {
         foreach ($results as $result) {
-            foreach ($result as $key => $value)
-            {
-                echo $key.str_repeat(" ",strlen($value) - strlen($key) + 6);
+            foreach ($result as $key => $value) {
+                echo $key . str_repeat(" ", strlen($value) - strlen($key) + 6);
             }
             echo "\n";
 
@@ -137,5 +136,6 @@ class Transformer
             }
             echo "\n \n";
         }
+
     }
 }

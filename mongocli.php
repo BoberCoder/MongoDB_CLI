@@ -7,6 +7,7 @@ require_once "config.php";
 use MongoDB\Client as MongoClient;
 use MongoDB_CLI\Transformer;
 
+
 echo "\033[36mWelcome to MongoDB CLI. Available databases:\033[0m \n";
 
 
@@ -21,12 +22,13 @@ foreach ($dbs as $db){
 }
 
 
+
 /**
  * Connect to MongoDB as logged user
  */
 //echo "\033[36mPlease enter database which you want to use: \033[0m";
 //$database = trim(fgets(STDIN));
-//echo "\033[36mEnter your username: \033[0m";
+//echo "\n\033[36mEnter your username: \033[0m";
 //$username = trim(fgets(STDIN));
 //echo "\033[36mAnd password: \033[0m";
 //$password = trim(fgets(STDIN));
@@ -34,11 +36,25 @@ foreach ($dbs as $db){
 $mongo = new MongoClient('mongodb://127.0.0.1/test', array('username'=>"myTester",'password'=>"xyz123"));
 
 
+
+
+/**
+ * Display all available collections in selected database
+ */
+//echo "\n\033[36mAvailable collections in this database:\033[0m \n";
+//
+//$collections = $mongo->$database->listCollections();
+//foreach ($collections as $collection){
+//    echo $collection->getName(). "\n";
+//}
+
+
+
 /**
  * Query input and division in array
  */
 start:
-echo "\033[36mEnter your query: \033[0m";
+echo "\n\033[36mEnter your query: \033[0m";
 $query = trim(fgets(STDIN));
 $sql =  preg_split("/[\s,]+/", $query);
 
@@ -85,7 +101,7 @@ if ($sql[0] == "SELECT") {
     else
     {
         $projections = array_slice($sql, 1, array_search("FROM",$sql) - 1);
-        $projections = $transformer->getProgections($projections);
+        $projections = $transformer->getProjections($projections);
 
         if($where = array_keys($sql,"WHERE"))
         {
