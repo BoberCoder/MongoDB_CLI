@@ -125,6 +125,8 @@ class Transformer
 
     public function echoResult($results)
     {
+
+        var_dump(iterator_to_array($results));
         foreach ($results as $result) {
             foreach ($result as $key => $value) {
                 echo $key . str_repeat(" ", strlen($value) - strlen($key) + 6);

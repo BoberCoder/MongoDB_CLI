@@ -1,6 +1,6 @@
 <?php
 
-require_once '/var/www/MongoDB_CLI/vendor/autoload.php';
+require_once __DIR__.'/../../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
 use MongoDB_CLI\Transformer;
