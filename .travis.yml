@@ -9,5 +9,5 @@ php:
   - nightly
 
 before_install:
-    - sudo apt-get install php-mongodb
+    - phpenv config-add myconfig.ini
     - composer install
