@@ -8,5 +8,6 @@ php:
   - hhvm
   - nightly
 
-install:
-   - composer install
+before_install:
+    -sudo apt-get install php-mongodb
+    - composer install
