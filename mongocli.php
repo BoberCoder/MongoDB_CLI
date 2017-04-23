@@ -26,12 +26,12 @@ foreach ($dbs as $db){
 /**
  * Connect to MongoDB as logged user
  */
-//echo "\033[36mPlease enter database which you want to use: \033[0m";
-//$database = trim(fgets(STDIN));
-//echo "\n\033[36mEnter your username: \033[0m";
-//$username = trim(fgets(STDIN));
-//echo "\033[36mAnd password: \033[0m";
-//$password = trim(fgets(STDIN));
+echo "\033[36mPlease enter database which you want to use: \033[0m";
+$database = trim(fgets(STDIN));
+echo "\n\033[36mEnter your username: \033[0m";
+$username = trim(fgets(STDIN));
+echo "\033[36mAnd password: \033[0m";
+$password = trim(fgets(STDIN));
 
 $mongo = new MongoClient('mongodb://127.0.0.1/test', array('username'=>"myTester",'password'=>"xyz123"));
 
@@ -41,12 +41,12 @@ $mongo = new MongoClient('mongodb://127.0.0.1/test', array('username'=>"myTester
 /**
  * Display all available collections in selected database
  */
-//echo "\n\033[36mAvailable collections in this database:\033[0m \n";
-//
-//$collections = $mongo->$database->listCollections();
-//foreach ($collections as $collection){
-//    echo $collection->getName(). "\n";
-//}
+echo "\n\033[36mAvailable collections in this database:\033[0m \n";
+
+$collections = $mongo->$database->listCollections();
+foreach ($collections as $collection){
+    echo $collection->getName(). "\n";
+}
 
 
 
@@ -64,8 +64,20 @@ $sql =  preg_split("/[\s,]+/", $query);
  */
 if ($sql[0] == "SELECT") {
 
-    $collection = $sql[array_search("FROM",$sql) + 1];
-    $collection = $mongo->test->$collection;
+
+    /**
+     * Collection determination
+     */
+    if (array_search("FROM",$sql))
+    {
+        $collection = $sql[array_search("FROM",$sql) + 1];
+        $collection = $mongo->test->$collection;
+    }
+    else
+    {
+        echo "\033[31mExpression 'FROM' is lost\033[0m\n";
+        goto start;
+    }
 
 
     $transformer = new Transformer($collection);
@@ -122,32 +134,37 @@ if ($sql[0] == "SELECT") {
         }
     }
 
+    /**
+     * Limit value define
+     */
     $limit = [];
-    $skip = [];
-    $order = ["property" => "_id", "val" => 1];
-
     if(array_search("LIMIT",$sql))
     {
-        $limit = (int)$sql[array_search("LIMIT",$sql) + 1];
+       $limit = $transformer->getLimitValue($sql);
     }
+
+    /**
+     * Skip value define
+     */
+    $skip = [];
     if(array_search("SKIP",$sql))
     {
-        $skip = (int)$sql[array_search("SKIP",$sql) + 1];
+        $skip = $transformer->getSkipValue($sql);
     }
 
+    /**
+     * Order By value define
+     */
     if(array_search("ORDER_BY",$sql))
     {
-        $order["property"] = $sql[array_search("ORDER_BY",$sql) + 1];
-        if ($sql[array_search("ORDER_BY",$sql) + 2] == "ASC")
-        {
-            $order["val"] = 1;
-        }
-        elseif ($sql[array_search("ORDER_BY",$sql) + 2] == "DESC")
-        {
-            $order["val"] = -1;
-        }
+        $order = $transformer->getOrderByValue($sql);
+    }
+    else
+    {
+        $order = ["property" => "_id", "val" => 1];
     }
 
+    var_dump($order);
 
     $results = $transformer->executeQuery($options,$projections,$limit,$skip,$order);
     $transformer->echoResult($results);

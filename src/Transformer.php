@@ -11,11 +11,22 @@ class Transformer
         $this->collection = $collection;
     }
 
+    /**
+     * Get all projections
+     *
+     * @return array
+     */
     public function getAll()
     {
         return [];
     }
 
+    /**
+     * Get array of projections
+     *
+     * @param $projections
+     * @return array
+     */
     public function getProjections($projections)
     {
         $array = [];
@@ -29,6 +40,13 @@ class Transformer
 
     }
 
+    /**
+     * Get WHERE options for find
+     *
+     * @param $expressions
+     * @param string $operation
+     * @return array
+     */
     public function whereCondition($expressions,$operation = "")
     {
         $options = [];
@@ -83,6 +101,13 @@ class Transformer
 
     }
 
+    /**
+     * Get array of expression for WHERE
+     *
+     * @param $sql
+     * @param $word
+     * @return array
+     */
     public function expressionGenerator($sql,$word)
     {
         $expression = [];
@@ -100,7 +125,59 @@ class Transformer
         return $expression;
     }
 
+    /**
+     * Get Limit value
+     *
+     * @param $sql
+     * @return int
+     */
+    public function getLimitValue($sql)
+    {
+        return (int)$sql[array_search("LIMIT",$sql) + 1];
+    }
 
+    /**
+     * Get Skip value
+     *
+     * @param $sql
+     * @return int
+     */
+    public function getSkipValue($sql)
+    {
+        return (int)$sql[array_search("SKIP",$sql) + 1];
+    }
+
+    /**
+     * Get Order By value
+     *
+     * @param $sql
+     * @return mixed
+     */
+    public function getOrderByValue($sql)
+    {
+        $order["property"] = $sql[array_search("ORDER_BY",$sql) + 1];
+        if ($sql[array_search("ORDER_BY",$sql) + 2] == "ASC")
+        {
+            $order["val"] = 1;
+        }
+        elseif ($sql[array_search("ORDER_BY",$sql) + 2] == "DESC")
+        {
+            $order["val"] = -1;
+        }
+
+        return $order;
+    }
+
+    /**
+     * Get Mongo cursor based on defined values
+     *
+     * @param $options
+     * @param $projections
+     * @param $limit
+     * @param $skip
+     * @param $order
+     * @return mixed
+     */
     public function executeQuery($options,$projections,$limit,$skip,$order)
     {
         if ($limit and $skip)
@@ -123,16 +200,27 @@ class Transformer
         return $results;
     }
 
+    /**
+     * Print result to console
+     *
+     * @param $results
+     */
     public function echoResult($results)
     {
         foreach ($results as $result) {
             foreach ($result as $key => $value) {
-                echo $key . str_repeat(" ", strlen($value) - strlen($key) + 6);
-            }
-            echo "\n";
-
-            foreach ($result as $key => $value) {
-                echo '|' . $result[$key] . '|    ';
+                if (is_object($value))
+                {
+                    echo $key. ":\n";
+                    foreach ($value as $embkey => $embvalue)
+                    {
+                        echo $embkey . ':'. $embvalue . '    ';
+                    }
+                }
+                else
+                {
+                    echo $key . ':'. $value . '    ';
+                }
             }
             echo "\n \n";
         }

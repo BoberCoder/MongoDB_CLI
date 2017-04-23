@@ -17,8 +17,16 @@ Install:
 
 Usage:
 
+Run application : `php mongocli.php`
+
 `SELECT * FROM foo WHERE age >= 19 AND name = Vasya_Pupkin LIMIT 2 ORDER_BY surname ASC`
 
 `SELECT name,surname FROM foo ORDER_BY surname ASC`
 
 `SELECT name FROM foo WHERE age < 19 OR name = Mark SKIP 2 ORDER_BY city DESC`
+
+-----
+Tests:
+
+To run tests input: `phpunit tests`
+

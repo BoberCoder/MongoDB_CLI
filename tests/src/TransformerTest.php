@@ -49,4 +49,15 @@ class TransformerTest extends TestCase
         $this->assertEquals($expected,$actual);
 
     }
+
+    public function testGetOrderByValue()
+    {
+        $sql = ["SELECT","*","FROM","foo","ORDER_BY","name","ASC"];
+
+        $actual = $this->transformer->getOrderByValue($sql);
+
+        $expected = ["property"=>"name","val"=>1];
+
+        $this->assertEquals($expected,$actual);
+    }
 }
