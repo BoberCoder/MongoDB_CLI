@@ -2,19 +2,23 @@
 <?php
 
 include 'vendor/autoload.php';
-require_once "config.php";
 
 use MongoDB\Client as MongoClient;
 use MongoDB_CLI\Transformer;
 
 
-echo "\033[36mWelcome to MongoDB CLI. Available databases:\033[0m \n";
+/**
+ * Get config from file
+ */
+$config = json_decode(file_get_contents("config/config.json"));
 
+
+echo "\033[36mWelcome to MongoDB CLI. Available databases:\033[0m \n";
 
 /**
  * Display all available databases
  */
-$admin = new MongoClient('mongodb://127.0.0.1/'.$config["database"], array('username'=> $config["username"],'password'=> $config["password"]));
+$admin = new MongoClient('mongodb://127.0.0.1/'.$config->database, array('username'=> $config->username,'password'=> $config->password));
 
 $dbs = $admin->listDatabases();
 foreach ($dbs as $db){
@@ -164,7 +168,6 @@ if ($sql[0] == "SELECT") {
         $order = ["property" => "_id", "val" => 1];
     }
 
-    var_dump($order);
 
     $results = $transformer->executeQuery($options,$projections,$limit,$skip,$order);
     $transformer->echoResult($results);
