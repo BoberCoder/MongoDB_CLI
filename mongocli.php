@@ -18,7 +18,7 @@ echo "\033[36mWelcome to MongoDB CLI. Available databases:\033[0m \n";
 /**
  * Display all available databases
  */
-$admin = new MongoClient('mongodb://127.0.0.1/'.$config->database, array('username'=> $config->username,'password'=> $config->password));
+$admin = new MongoClient('mongodb://127.0.0.1/admin');
 
 $dbs = $admin->listDatabases();
 foreach ($dbs as $db){
@@ -32,12 +32,8 @@ foreach ($dbs as $db){
  */
 echo "\033[36mPlease enter database which you want to use: \033[0m";
 $database = trim(fgets(STDIN));
-echo "\n\033[36mEnter your username: \033[0m";
-$username = trim(fgets(STDIN));
-echo "\033[36mAnd password: \033[0m";
-$password = trim(fgets(STDIN));
 
-$mongo = new MongoClient('mongodb://127.0.0.1/test', array('username'=>"myTester",'password'=>"xyz123"));
+$mongo = new MongoClient("mongodb://127.0.0.1/".$database);
 
 
 
@@ -75,7 +71,7 @@ if ($sql[0] == "SELECT") {
     if (array_search("FROM",$sql))
     {
         $collection = $sql[array_search("FROM",$sql) + 1];
-        $collection = $mongo->test->$collection;
+        $collection = $mongo->$database->$collection;
     }
     else
     {
@@ -189,7 +185,6 @@ if ($decision == 'y'){
     goto start;
 }
 elseif ($decision == 'n'){
-
     die('bye'."\xA");
 }
 else{

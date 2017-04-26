@@ -7,16 +7,8 @@ Install:
 1. Clone app : `git clone https://github.com/BoberCoder/MongoDB_CLI.git`
  
 2. Then go to the directory MongoDB_CLI and input: `composer install`
-
-3. Edit config.json with any text editor (for example "gedit"): `gedit config.json`, and rewrite your admin user credentials for appropriate fields:
         
-        {
-            "database" : "admin",
-            "username" : "Admin",
-            "password" : "admin"
-        }
-        
-4. Done! Congratulations!!!
+3. Done! Congratulations!!!
 
 Usage:
 

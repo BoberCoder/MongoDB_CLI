@@ -203,27 +203,29 @@ class Transformer
     /**
      * Print result to console
      *
-     * @param $results
+     * @param $result
      */
-    public function echoResult($results)
+    public function echoResult($result)
     {
-        foreach ($results as $result) {
-            foreach ($result as $key => $value) {
-                if (is_object($value))
-                {
-                    echo $key. ":\n";
-                    foreach ($value as $embkey => $embvalue)
-                    {
-                        echo $embkey . ':'. $embvalue . '    ';
-                    }
-                }
-                else
-                {
-                    echo $key . ':'. $value . '    ';
-                }
+        foreach ($result as $key => $value)
+        {
+            if($key == "_id")
+            {
+                echo "\n";
             }
-            echo "\n \n";
-        }
 
+            if(is_object($value))
+            {
+                if(!is_integer($key))
+                {
+                    echo $key.":\n";
+                }
+                $this->echoResult($value);
+            }
+            else
+            {
+                echo $key . ':'. $value ."\n";
+            }
+        }
     }
 }
