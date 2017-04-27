@@ -209,22 +209,41 @@ class Transformer
     {
         foreach ($result as $key => $value)
         {
-            if($key == "_id")
-            {
-                echo "\n";
-            }
-
             if(is_object($value))
             {
-                if(!is_integer($key))
-                {
-                    echo $key.":\n";
-                }
-                $this->echoResult($value);
+                $this->echoEmbed($value,$indent = 0);
             }
             else
             {
                 echo $key . ':'. $value ."\n";
+            }
+            echo str_repeat("-",50);
+            echo "\n";
+        }
+
+    }
+
+    /**
+     * Display embed document
+     *
+     * @param $value
+     * @param $indent
+     */
+    public function echoEmbed($value,$indent)
+    {
+        foreach ($value as $embkey => $embvalue)
+        {
+            if(is_object($embvalue) or is_array($embvalue))
+            {
+                if(!is_integer($embkey))
+                {
+                    echo $embkey.": \n";
+                }
+                $this->echoEmbed($embvalue,$indent + 1);
+            }
+            else
+            {
+                echo str_repeat("   ",$indent).$embkey . ':'. $embvalue ."\n";
             }
         }
     }
